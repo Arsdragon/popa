@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e0632075-3410-46f5-89a2-a16e4a09a17d" name="Changes" comment="мсам">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/popa.html" beforeDir="false" afterPath="$PROJECT_DIR$/popa.html" afterDir="false" />
-    </list>
+    <list default="true" id="e0632075-3410-46f5-89a2-a16e4a09a17d" name="Changes" comment="мсам" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,7 +80,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779290170284</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="мсам">
+      <option name="closed" value="true" />
+      <created>1779294140047</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1779294140047</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
