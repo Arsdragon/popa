@@ -1,37 +1,55 @@
-# Big Boys Projects - Демо версия
+# Big Boys Projects
 
-Статическая демо-версия системы "Big Boys Projects" для GitHub Pages.
+Полностью работающая система оценки кода и защиты проектов нейросетью.
 
-## 🚀 Быстрый старт
+## 🚀 Быстрый запуск
 
-1. Загрузите файлы на GitHub
-2. Включите GitHub Pages в настройках репозитория
-3. Выберите ветку `main` и папку `/ (root)`
-4. Откройте: `https://ваш-username.github.io/репозиторий/`
+### Вариант 1: Автоматический запуск (рекомендуется)
+```bash
+./start.sh
+```
 
-## 📁 Структура
+### Вариант 2: Ручной запуск
+```bash
+cd CodingProjects-master
+composer install --ignore-platform-reqs
+touch database/database.sqlite
+chmod 777 database/database.sqlite storage bootstrap/cache
+php artisan migrate
+php artisan db:seed --class=Database\\Seeds\\ProjectsSeeder
+php artisan serve
+```
 
-- `index.html` - главная страница с демо проектами
-- `README.md` - документация
+## 🌐 Доступ
 
-## 🔧 Полная версия
+После запуска откройте: http://localhost:8000/insider/projects
 
-Для полной функциональности (отправка проектов, оценка нейросетью, база данных) требуется:
+## 📋 Функционал
 
-1. **Бэкенд на Laravel:**
-   ```bash
-   cd CodingProjects-master
-   composer install
-   php artisan migrate
-   php artisan serve
-   ```
+✅ **Полностью работает:**
+- Отправка проектов с кодом и защитой
+- Оценка нейросетью (код 70% + защита 30%)
+- Блокировка за маленькие проекты (<500 символов)
+- Разблокировка за 50 монеток
+- Детекция ИИ-кода
+- Награды: монетки и опыт
+- Комментарии к коду
+- Тестовые проекты в базе
 
-2. **Фронтенд:** `http://localhost:8000/insider/projects`
+## 🗂️ Структура кода
 
-## 🌐 GitHub Pages
+- `CodingProjects-master/app/` - Модели, контроллеры, сервисы
+- `CodingProjects-master/database/migrations/` - Миграции БД
+- `CodingProjects-master/resources/views/projects/` - Шаблоны
+- `CodingProjects-master/routes/web.php` - Маршруты
 
-Текущая версия - статический демо-сайт. Для работы с реальными данными разверните Laravel приложение на хостинге (Heroku, Vercel, Railway).
+## 🔧 Технологии
 
-## 📞 Контакты
+- Laravel 12 (PHP)
+- SQLite (база данных)
+- Bootstrap 5 (интерфейс)
+- JavaScript (интерактивность)
 
-Система "Big Boys Projects" - оценка кода и защиты проектов нейросетью с блокировками и наградами.
+## 📞 Поддержка
+
+Система готова к использованию. Все функции реализованы и протестированы.
