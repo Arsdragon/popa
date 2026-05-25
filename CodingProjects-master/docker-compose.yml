@@ -1,0 +1,242 @@
+x-app-environment: &app-environment
+  APP_ENV: ${APP_ENV:-production}
+  APP_DEBUG: ${APP_DEBUG:-false}
+  APP_URL: ${APP_URL:-http://localhost:8050}
+  DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+  DB_HOST: ${DB_HOST:-db}
+  DB_PORT: ${DB_PORT:-5432}
+  DB_DATABASE: ${DB_DATABASE:-codingprojects}
+  DB_USERNAME: ${DB_USERNAME:-codingprojects}
+  DB_PASSWORD: ${DB_PASSWORD:-codingprojects}
+  CACHE_DRIVER: ${CACHE_DRIVER:-redis}
+  SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+  QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+  REDIS_HOST: ${REDIS_HOST:-redis}
+  REDIS_PORT: ${REDIS_PORT:-6379}
+  REDIS_CLIENT: ${REDIS_CLIENT:-phpredis}
+  TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+  TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME:-}
+  TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET:-}
+  TELEGRAM_API_URL: ${TELEGRAM_API_URL:-https://api.telegram.org}
+  TELEGRAM_PROXY: ${TELEGRAM_PROXY:-}
+  TELEGRAM_TIMEOUT: ${TELEGRAM_TIMEOUT:-10}
+  GEEKPASTE_URL: ${GEEKPASTE_URL:-https://paste.geekclass.ru}
+  GEEKPASTE_API_KEY: ${GEEKPASTE_API_KEY:-}
+
+x-app-healthcheck: &app-healthcheck
+  test: ["CMD-SHELL", "php artisan about --only=environment >/dev/null 2>&1"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 60s
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: conf/Dockerfile
+      target: app
+    container_name: codingprojects-php
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    env_file:
+      - .env
+    environment:
+      <<: *app-environment
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck: *app-healthcheck
+    volumes:
+      - storage_app:/var/www/html/storage/app
+    networks:
+      - app
+
+  migrate:
+    build:
+      context: .
+      dockerfile: conf/Dockerfile
+      target: app
+    container_name: codingprojects-migrate
+    restart: "no"
+    command: sh -c "php artisan migrate --force && php artisan db:seed --force"
+    env_file:
+      - .env
+    environment:
+      <<: *app-environment
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - app
+
+  nginx:
+    build:
+      context: .
+      dockerfile: conf/Dockerfile
+      target: web
+    container_name: codingprojects-nginx
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      php:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:1111:8050"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://127.0.0.1:8050 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - app
+
+  node:
+    image: node:22-alpine
+    container_name: codingprojects-node
+    working_dir: /var/www/html
+    command: npm run build
+    profiles:
+      - tools
+    volumes:
+      - ./:/var/www/html
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - app
+
+  queue:
+    build:
+      context: .
+      dockerfile: conf/Dockerfile
+      target: app
+    container_name: codingprojects-queue
+    restart: unless-stopped
+    command: php artisan queue:work --sleep=3 --tries=3 --timeout=300
+    env_file:
+      - .env
+    environment:
+      <<: *app-environment
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck: *app-healthcheck
+    volumes:
+      - storage_app:/var/www/html/storage/app
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - app
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: conf/Dockerfile
+      target: app
+    container_name: codingprojects-scheduler
+    restart: unless-stopped
+    command: php artisan schedule:work
+    env_file:
+      - .env
+    environment:
+      <<: *app-environment
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck: *app-healthcheck
+    volumes:
+      - storage_app:/var/www/html/storage/app
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - app
+
+  db:
+    image: postgres:16-alpine
+    container_name: codingprojects-db
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-codingprojects}
+      POSTGRES_USER: ${DB_USERNAME:-codingprojects}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-codingprojects}
+    ports:
+      - "127.0.0.1:5435:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app
+
+  redis:
+    image: redis:7-alpine
+    container_name: codingprojects-redis
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app
+
+volumes:
+  db_data:
+  redis_data:
+  storage_app:
+
+networks:
+  app:
+    driver: bridge
