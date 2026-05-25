@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Boys Projects - Магазин проектов</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem; }
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 1.2rem; opacity: 0.9; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .stat-card h3 { color: #667eea; margin-bottom: 0.5rem; }
+        .projects { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .project-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .project-card:hover { transform: translateY(-5px); }
+        .project-header { background: #667eea; color: white; padding: 1rem; }
+        .project-body { padding: 1.5rem; }
+        .project-footer { background: #f8f9fa; padding: 1rem; border-top: 1px solid #eee; }
+        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; margin-right: 0.5rem; }
+        .badge-primary { background: #667eea; color: white; }
+        .badge-success { background: #10b981; color: white; }
+        .badge-warning { background: #f59e0b; color: white; }
+        .progress { height: 10px; background: #e5e7eb; border-radius: 5px; overflow: hidden; margin: 0.5rem 0; }
+        .progress-bar { height: 100%; background: #10b981; }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; }
+        .btn:hover { background: #5a67d8; }
+        footer { margin-top: 3rem; text-align: center; color: #6b7280; padding: 2rem 0; border-top: 1px solid #e5e7eb; }
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            h1 { font-size: 2rem; }
+            .projects { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Big Boys Projects</h1>
+            <p class="subtitle">Магазин масштабных проектов школьников. Отправляйте код и защиту, получайте оценку нейросети!</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>📊 Всего проектов</h3>
+                <p id="total-projects">15</p>
+            </div>
+            <div class="stat-card">
+                <h3>🏆 Лучшая оценка</h3>
+                <p id="top-score">94/100</p>
+            </div>
+            <div class="stat-card">
+                <h3>💰 Всего наград</h3>
+                <p id="total-rewards">1,250 монеток</p>
+            </div>
+            <div class="stat-card">
+                <h3>👥 Участников</h3>
+                <p id="total-users">42</p>
+            </div>
+        </div>
+
+        <h2 style="margin-bottom: 1rem;">🚀 Популярные проекты</h2>
+        <div class="projects" id="projects-container">
+            <!-- Проекты будут загружены через JavaScript -->
+        </div>
+
+        <div style="text-align: center; margin: 3rem 0;">
+            <h2>Хотите отправить свой проект?</h2>
+            <p style="margin: 1rem 0; color: #6b7280;">Для полного функционала требуется бэкенд-сервер</p>
+            <a href="#" class="btn" onclick="alert('Бэкенд-сервер не запущен. Запустите Laravel приложение локально.');">Отправить проект</a>
+        </div>
+
+        <footer>
+            <p>Big Boys Projects &copy; 2024</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Система оценки кода и защиты проектов нейросетью</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #9ca3af;">Для работы требуется бэкенд на Laravel</p>
+        </footer>
+    </div>
+
+    <script>
+        const projects = [
+            {
+                id: 1,
+                title: "Умный калькулятор на Python",
+                author: "Иван Петров",
+                score: 85,
+                defense: 75,
+                complexity: 7,
+                coins: 120,
+                experience: 60,
+                isAI: false,
+                description: "Калькулятор с графическим интерфейсом и поддержкой сложных операций"
+            },
+            {
+                id: 2,
+                title: "Система управления задачами",
+                author: "Анна Сидорова",
+                score: 78,
+                defense: 82,
+                complexity: 8,
+                coins: 150,
+                experience: 75,
+                isAI: false,
+                description: "Веб-приложение для управления задачами с базой данных"
+            },
+            {
+                id: 3,
+                title: "ИИ-ассистент для учебы",
+                author: "Максим Иванов",
+                score: 65,
+                defense: 90,
+                complexity: 9,
+                coins: 180,
+                experience: 90,
+                isAI: true,
+                description: "ИИ-помощник для подготовки к экзаменам с NLP"
+            }
+        ];
+
+        function renderProjects() {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+            
+            projects.forEach(project => {
+                const totalScore = Math.round((project.score * 0.7) + (project.defense * 0.3));
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <div class="project-header">
+                        <h3>${project.title}</h3>
+                        <small>Автор: ${project.author}</small>
+                    </div>
+                    <div class="project-body">
+                        <p>${project.description}</p>
+                        <div style="margin: 1rem 0;">
+                            <span class="badge badge-primary">Сложность: ${project.complexity}/10</span>
+                            ${project.isAI ? '<span class="badge badge-warning">ИИ-код</span>' : ''}
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${totalScore}%"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <span>Код: ${project.score}/100</span>
+                            <span>Защита: ${project.defense}/100</span>
+                        </div>
+                    </div>
+                    <div class="project-footer">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: #f59e0b;">💰 ${project.coins}</span>
+                                <span style="margin-left: 1rem; color: #3b82f6;">⭐ ${project.experience}</span>
+                            </div>
+                            <button class="btn" onclick="viewProject(${project.id})">Подробнее</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function viewProject(id) {
+            const project = projects.find(p => p.id === id);
+            if (project) {
+                alert(`Проект: ${project.title}\nАвтор: ${project.author}\nОценка кода: ${project.score}/100\nОценка защиты: ${project.defense}/100\nНаграда: ${project.coins} монеток + ${project.experience} опыта\n${project.isAI ? '⚠ Содержит ИИ-код' : '✅ Без ИИ-кода'}`);
+            }
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProjects();
+            document.getElementById('total-projects').textContent = projects.length;
+            document.getElementById('top-score').textContent = Math.max(...projects.map(p => Math.round((p.score * 0.7) + (p.defense * 0.3)))) + '/100';
+            document.getElementById('total-rewards').textContent = projects.reduce((sum, p) => sum + p.coins, 0) + ' монеток';
+        });
+    </script>
+</body>
+</html>
